@@ -1,16 +1,11 @@
-# walk_finder
+# path_finder
 
-A new Flutter project.
+This is a project that allows you to generate random walking / biking / driving routes for when you are bored. Made with Flutter and Google Maps.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To run the project first clone it. Then to install the dependencies run:
+```bash
+flutter packages get
+```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
