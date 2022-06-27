@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.walk_finder">
    <application
-        android:label="walk_finder"
+        android:label="path_finder"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -34,4 +34,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCTf8nZbydMfnWiciDCGFUc8cSHUIDpAxQ" />
     </application>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 </manifest>

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:walk_finder/mode_selector.dart';
+import 'package:walk_finder/options.dart';
 
 class InfoSheet extends StatefulWidget {
   const InfoSheet({
     Key? key,
+    required this.updateTransportationMode,
   }) : super(key: key);
+
+  final void Function(TransportationMode mode) updateTransportationMode;
 
   @override
   State<InfoSheet> createState() => _InfoBarState();
@@ -22,12 +27,15 @@ class _InfoBarState extends State<InfoSheet> {
                     context: context,
                     builder: (BuildContext context) {
                       return Container(
-                        height: 200,
-                        color: Colors.white,
-                        child: Column(children: <Widget>[
-                          
-                        ],)
-                      );
+                          height: 200,
+                          color: Colors.white,
+                          child: Column(
+                            children: <Widget>[
+                              ModeSelector(
+                                  updateTransportationMode:
+                                      widget.updateTransportationMode),
+                            ],
+                          ));
                     });
               },
               style: ButtonStyle(

@@ -7,7 +7,10 @@
     {
       "name": "walk_finder",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
+      "args": [
+        "--no-sound-null-safety"
+      ]
     },
     {
       "name": "walk_finder (profile mode)",
