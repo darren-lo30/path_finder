@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:walk_finder/options.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class ModeSelector extends StatefulWidget {
-  final void Function(TransportationMode) updateTransportationMode;
-  const ModeSelector({Key? key, required this.updateTransportationMode})
+  final void Function(TravelMode) updateTravelMode;
+  const ModeSelector(
+      {Key? key, required this.updateTravelMode, required this.travelMode})
       : super(key: key);
+
+  final TravelMode travelMode;
 
   @override
   State<ModeSelector> createState() => _ModeSelectorState();
 }
 
 class _ModeSelectorState extends State<ModeSelector> {
-  final List<bool> _selections = [true, false, false];
+  final List<TravelMode> _travelModes = [
+    TravelMode.walking,
+    TravelMode.bicycling,
+    TravelMode.driving
+  ];
+
+  late final List<bool> _selections =
+      _travelModes.map((TravelMode mode) => mode == widget.travelMode).toList();
 
   @override
   Widget build(BuildContext context) {
     return ToggleButtons(
       onPressed: (int index) {
         // Invoke call back to update the set mode
-        widget.updateTransportationMode(TransportationMode.values[index]);
+        widget.updateTravelMode(_travelModes[index]);
 
         // Select the toggle button clicked and unselect everything else
         for (int i = 0; i < _selections.length; i++) {
