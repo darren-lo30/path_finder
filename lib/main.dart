@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:walk_finder/floating_display.dart';
 import 'package:walk_finder/info_sheet.dart';
 import 'package:walk_finder/map.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -23,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   TravelMode selectedTravelMode = TravelMode.walking;
   double selectedDistance = 3.0;
   List<LatLng> routeCoordinates = [];
+  double routeDistance = -1.0;
 
   Future<void> updateRoute() async {
     Location location = Location();
@@ -34,6 +36,7 @@ class _MyAppState extends State<MyApp> {
         selectedTravelMode);
     setState(() {
       routeCoordinates = route;
+      routeDistance = calculatePathDistance(route);
     });
   }
 
@@ -41,10 +44,14 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: "PathFinder",
+        theme: ThemeData(
+          fontFamily: 'Raleway',
+        ),
         home: Stack(children: <Widget>[
           MapView(
             routeCoordinates: routeCoordinates,
           ),
+          FloatingDisplay(routeDistance: routeDistance),
           InfoSheet(
             updateTravelMode: (TravelMode travelMode) {
               setState(() {

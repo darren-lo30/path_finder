@@ -60,7 +60,7 @@ class _InfoBarState extends State<InfoSheet> {
                 padding: MaterialStateProperty.all(const EdgeInsets.all(10)),
               ),
               child: const Icon(Icons.keyboard_arrow_up_rounded,
-                  color: Colors.black),
+                  color: Colors.white),
             )));
   }
 }

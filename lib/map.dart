@@ -16,7 +16,7 @@ class MapView extends StatefulWidget {
 class _MapState extends State<MapView> {
   late GoogleMapController _mapController;
 
-  final LatLng _currentLatLng = const LatLng(43.894544, -79.419335);
+  LatLng _currentLatLng = LatLng(0, 0);
   final Location _currentLocation = Location();
 
   Polyline _createRoutePolyline() {
@@ -28,20 +28,19 @@ class _MapState extends State<MapView> {
     );
   }
 
-  void _onMapCreated(GoogleMapController controller) {
+  void _onMapCreated(GoogleMapController controller) async {
     _mapController = controller;
-    // _currentLocation.onLocationChanged.listen((location) {
-    //   _currentLatLng = LatLng(location.latitude!, location.longitude!);
-    //   _mapController.animateCamera(CameraUpdate.newCameraPosition(
-    //       CameraPosition(target: _currentLatLng, zoom: 18.0)));
-    // });
+    LocationData locationData = await _currentLocation.getLocation();
+    _mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: LatLng(locationData.latitude!, locationData.longitude!),
+        zoom: 18.0)));
   }
 
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
       onMapCreated: _onMapCreated,
-      initialCameraPosition: CameraPosition(target: _currentLatLng, zoom: 18.0),
+      initialCameraPosition: CameraPosition(target: _currentLatLng, zoom: 1.0),
       myLocationEnabled: true,
       myLocationButtonEnabled: true,
       zoomGesturesEnabled: true,

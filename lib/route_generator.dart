@@ -42,6 +42,15 @@ double calculatePathDistance(List<LatLng> route) {
   return totalDistance;
 }
 
+LatLng calculateLatLngOffset(LatLng base, double dLat, double dLon) {
+  // Calculates lat lng offset in meters from anohter lat lng
+  const double earthRadius = 6378100;
+  return LatLng(
+      base.latitude + (dLat / earthRadius) * (180 / pi),
+      base.longitude +
+          (dLon / earthRadius) * (180 / pi) / cos(base.latitude * pi / 180));
+}
+
 // Given waypoints, generates the full path of points between them
 Future<List<LatLng>> generateWaypointPath(
     List<LatLng> waypoints, travelMode) async {
@@ -67,7 +76,11 @@ Future<List<LatLng>> generateWaypointPath(
 
 Future<List<LatLng>> generateRoute(
     LatLng home, double distance, TravelMode travelMode) async {
-  return generateWaypointPath(
-      [LatLng(43.894544, -79.419335), LatLng(43.873491, -79.396553)],
-      TravelMode.walking);
+  List<LatLng> waypoints = [home];
+
+  LatLng next = calculateLatLngOffset(home, 300, 300);
+  print(next);
+  waypoints.add(next);
+
+  return generateWaypointPath(waypoints, travelMode);
 }
