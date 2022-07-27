@@ -69,8 +69,6 @@ Future<List<LatLng>> generateWaypointPath(
     }
   }
 
-  print('Hello World');
-  print(route);
   return route;
 }
 
@@ -78,9 +76,10 @@ Future<List<LatLng>> generateRoute(
     LatLng home, double distance, TravelMode travelMode) async {
   List<LatLng> waypoints = [home];
 
-  LatLng next = calculateLatLngOffset(home, 300, 300);
-  print(next);
-  waypoints.add(next);
-
+  waypoints.add(calculateLatLngOffset(home, 300, 300));
+  waypoints.add(calculateLatLngOffset(home, -300, 300));
+  waypoints.add(calculateLatLngOffset(home, -300, -300));
+  waypoints.add(calculateLatLngOffset(home, 300, -300));
+  waypoints.add(home);
   return generateWaypointPath(waypoints, travelMode);
 }

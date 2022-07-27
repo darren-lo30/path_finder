@@ -16,7 +16,7 @@ class MapView extends StatefulWidget {
 class _MapState extends State<MapView> {
   late GoogleMapController _mapController;
 
-  LatLng _currentLatLng = LatLng(0, 0);
+  final LatLng _currentLatLng = const LatLng(0, 0);
   final Location _currentLocation = Location();
 
   Polyline _createRoutePolyline() {
