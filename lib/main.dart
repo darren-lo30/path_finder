@@ -28,11 +28,12 @@ class _MyAppState extends State<MyApp> {
     Location location = Location();
     LocationData locationData = await location.getLocation();
 
+    List<LatLng> route = await generateRoute(
+        LatLng(locationData.latitude!, locationData.longitude!),
+        selectedDistance,
+        selectedTravelMode);
     setState(() {
-      routeCoordinates = generateRoute(
-          LatLng(locationData.latitude!, locationData.longitude!),
-          selectedDistance,
-          selectedTravelMode);
+      routeCoordinates = route;
     });
   }
 

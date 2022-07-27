@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -16,7 +17,7 @@ int generateNumWaypoints() {
 }
 
 // Calculates the distance between two latitude longitude coordinates
-double calculateDistance(LatLng point1, LatLng point2) {
+double calculatePointDistance(LatLng point1, LatLng point2) {
   double lat1 = point1.latitude;
   double lon1 = point1.longitude;
 
@@ -31,24 +32,42 @@ double calculateDistance(LatLng point1, LatLng point2) {
 }
 
 // Calculates the distance of a polyline path to determine the length of the route
-double calculatePathDistance(List<LatLng> polylinePath) {
+double calculatePathDistance(List<LatLng> route) {
   double totalDistance = 0;
 
-  for (int i = 0; i < polylinePath.length - 1; i++) {
-    totalDistance += calculateDistance(polylinePath[i], polylinePath[i + 1]);
+  for (int i = 0; i < route.length - 1; i++) {
+    totalDistance += calculatePointDistance(route[i], route[i + 1]);
   }
 
   return totalDistance;
 }
 
-double generateRotation(int numWaypoints) {
-  Random rand = Random();
+// Given waypoints, generates the full path of points between them
+Future<List<LatLng>> generateWaypointPath(
+    List<LatLng> waypoints, travelMode) async {
+  PolylinePoints polylinePoints = PolylinePoints();
 
-  // maximum nui
-  return rand.nextDouble();
+  List<LatLng> route = [];
+  for (int i = 0; i < waypoints.length - 1; i++) {
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        dotenv.env['DIRECTIONS_API_KEY']!,
+        PointLatLng(waypoints[i].latitude, waypoints[i].longitude),
+        PointLatLng(waypoints[i + 1].latitude, waypoints[i + 1].longitude),
+        travelMode: travelMode);
+
+    for (PointLatLng point in result.points) {
+      route.add(LatLng(point.latitude, point.longitude));
+    }
+  }
+
+  print('Hello World');
+  print(route);
+  return route;
 }
 
-List<LatLng> generateRoute(
-    LatLng base, double distance, TravelMode travelMode) {
-  return [LatLng(43.894544, -79.419335), LatLng(43.873491, -79.396553)];
+Future<List<LatLng>> generateRoute(
+    LatLng home, double distance, TravelMode travelMode) async {
+  return generateWaypointPath(
+      [LatLng(43.894544, -79.419335), LatLng(43.873491, -79.396553)],
+      TravelMode.walking);
 }
