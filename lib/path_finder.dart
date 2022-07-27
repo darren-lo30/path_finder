@@ -50,7 +50,9 @@ class _PathFinderState extends State<PathFinder> {
       ),
       // Only displays distance once a route has been generated
       if (routeDistance >= 0) FloatingDisplay(routeDistance: routeDistance),
-      if (isGeneratingRoute) const CircularProgressIndicator(),
+      if (isGeneratingRoute)
+        const Align(
+            alignment: Alignment.center, child: CircularProgressIndicator()),
       InfoSheet(
         updateTravelMode: (TravelMode travelMode) {
           setState(() {

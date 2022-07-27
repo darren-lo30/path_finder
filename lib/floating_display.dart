@@ -27,7 +27,7 @@ class FloatingDisplay extends StatelessWidget {
                 padding: const EdgeInsets.all(10.0),
                 child: Text(formatDistance(routeDistance),
                     style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 20,
                         color: Colors.black,
                         decoration: TextDecoration.none,
                         fontWeight: FontWeight.bold)))));

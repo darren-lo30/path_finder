@@ -25,6 +25,11 @@ class InfoSheet extends StatefulWidget {
 }
 
 class _InfoBarState extends State<InfoSheet> {
+  void onFindRoutePressed() {
+    Navigator.pop(context);
+    widget.updateRoute();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -49,7 +54,7 @@ class _InfoBarState extends State<InfoSheet> {
                                   updateDistance: widget.updateDistance,
                                   distance: widget.distance),
                               TextButton(
-                                  onPressed: widget.updateRoute,
+                                  onPressed: onFindRoutePressed,
                                   child: const Text('Find Route'))
                             ],
                           ));
