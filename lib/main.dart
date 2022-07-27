@@ -26,6 +26,7 @@ class _MyAppState extends State<MyApp> {
   List<LatLng> routeCoordinates = [];
   double routeDistance = -1.0;
 
+  // Updates the route data using the users desired route distance and current location
   Future<void> updateRoute() async {
     Location location = Location();
     LocationData locationData = await location.getLocation();
@@ -51,7 +52,8 @@ class _MyAppState extends State<MyApp> {
           MapView(
             routeCoordinates: routeCoordinates,
           ),
-          FloatingDisplay(routeDistance: routeDistance),
+          // Only displays distance once a route has been generated
+          if (routeDistance >= 0) FloatingDisplay(routeDistance: routeDistance),
           InfoSheet(
             updateTravelMode: (TravelMode travelMode) {
               setState(() {

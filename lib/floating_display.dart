@@ -6,6 +6,11 @@ class FloatingDisplay extends StatelessWidget {
 
   final double routeDistance;
 
+  String formatDistance(double distance) {
+    if (distance < 1) return "${(distance * 1000).toStringAsFixed(0)} m";
+    return "${distance.toStringAsFixed(2)} km";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -20,7 +25,7 @@ class FloatingDisplay extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: Text("$routeDistance km",
+                child: Text(formatDistance(routeDistance),
                     style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black,
