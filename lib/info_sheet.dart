@@ -6,8 +6,6 @@ import 'package:walk_finder/mode_selector.dart';
 class InfoSheet extends StatefulWidget {
   const InfoSheet({
     Key? key,
-    required this.distance,
-    required this.travelMode,
     required this.updateTravelMode,
     required this.updateRoute,
     required this.updateDistance,
@@ -16,9 +14,6 @@ class InfoSheet extends StatefulWidget {
   final void Function(TravelMode) updateTravelMode;
   final void Function(double) updateDistance;
   final VoidCallback updateRoute;
-
-  final double distance;
-  final TravelMode travelMode;
 
   @override
   State<InfoSheet> createState() => _InfoBarState();
@@ -48,11 +43,13 @@ class _InfoBarState extends State<InfoSheet> {
                           child: Column(
                             children: <Widget>[
                               ModeSelector(
-                                  updateTravelMode: widget.updateTravelMode,
-                                  travelMode: widget.travelMode),
+                                updateTravelMode: widget.updateTravelMode,
+                                initialTravelMode: TravelMode.walking,
+                              ),
                               DistanceSelector(
-                                  updateDistance: widget.updateDistance,
-                                  distance: widget.distance),
+                                updateDistance: widget.updateDistance,
+                                initialDistance: 1.0,
+                              ),
                               TextButton(
                                   onPressed: onFindRoutePressed,
                                   child: const Text('Find Route'))

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:walk_finder/pair.dart';
 
 // Given a mode of transportation and measure (either distance or time), it calculates a random path
 // from the current location that fits within the measure constraint using the given mode of transportation
@@ -17,6 +18,7 @@ int generateNumWaypoints() {
 }
 
 // Calculates the distance between two latitude longitude coordinates
+// Returns meters
 double calculatePointDistance(LatLng point1, LatLng point2) {
   double lat1 = point1.latitude;
   double lon1 = point1.longitude;
@@ -28,7 +30,7 @@ double calculatePointDistance(LatLng point1, LatLng point2) {
   double a = 0.5 -
       cos((lat2 - lat1) * p) / 2 +
       cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
-  return 12742 * asin(sqrt(a));
+  return 12742 * asin(sqrt(a)) * 1000;
 }
 
 // Calculates the distance of a polyline path to determine the length of the route
@@ -72,14 +74,42 @@ Future<List<LatLng>> generateWaypointPath(
   return route;
 }
 
+// Everything in meters
 Future<List<LatLng>> generateRoute(
     LatLng home, double distance, TravelMode travelMode) async {
-  List<LatLng> waypoints = [home];
+  const int numCycles = 10;
+  List<Pair> offsets = List<Pair>.generate(4, (_) => Pair(0.0, 0.0));
+  List<Pair> directions = [Pair(-1, 1), Pair(1, 1), Pair(1, -1), Pair(-1, -1)];
 
-  waypoints.add(calculateLatLngOffset(home, 300, 300));
-  waypoints.add(calculateLatLngOffset(home, -300, 300));
-  waypoints.add(calculateLatLngOffset(home, -300, -300));
-  waypoints.add(calculateLatLngOffset(home, 300, -300));
-  waypoints.add(home);
-  return generateWaypointPath(waypoints, travelMode);
+  late List<LatLng> route;
+  double calculatedRouteDistance = 0.0;
+
+  for (int i = 0; i < numCycles; i++) {
+    // Adjust waypoints accordingly and randomly (move them inwards if the distanceDifference is negative, outwards if positive);
+    double distanceDifference = distance - calculatedRouteDistance;
+
+    Random rand = Random();
+    for (Pair offset in offsets) {
+      offset.first += (rand.nextDouble() + 1.0) * distanceDifference / 32;
+      offset.second += (rand.nextDouble() + 1.0) * distanceDifference / 32;
+    }
+
+    List<LatLng> waypoints = [home];
+
+    for (int waypointIdx = 0; waypointIdx < 4; waypointIdx++) {
+      double dLat =
+          (directions[waypointIdx].first * offsets[waypointIdx].first);
+      double dLon =
+          directions[waypointIdx].second * offsets[waypointIdx].second;
+      waypoints.add(calculateLatLngOffset(home, dLat, dLon));
+    }
+
+    waypoints.add(home);
+
+    route = await generateWaypointPath(waypoints, travelMode);
+
+    calculatedRouteDistance = calculatePathDistance(route);
+  }
+
+  return route;
 }

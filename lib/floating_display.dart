@@ -7,8 +7,8 @@ class FloatingDisplay extends StatelessWidget {
   final double routeDistance;
 
   String formatDistance(double distance) {
-    if (distance < 1) return "${(distance * 1000).toStringAsFixed(0)} m";
-    return "${distance.toStringAsFixed(2)} km";
+    if (distance < 1000) return "${(distance).toStringAsFixed(0)} m";
+    return "${(distance / 1000).toStringAsFixed(2)} km";
   }
 
   @override

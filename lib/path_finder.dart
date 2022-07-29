@@ -32,7 +32,7 @@ class _PathFinderState extends State<PathFinder> {
 
     List<LatLng> route = await generateRoute(
         LatLng(locationData.latitude!, locationData.longitude!),
-        selectedDistance,
+        1000 * selectedDistance,
         selectedTravelMode);
 
     setState(() {
@@ -65,8 +65,6 @@ class _PathFinderState extends State<PathFinder> {
           });
         },
         updateRoute: updateRoute,
-        distance: selectedDistance,
-        travelMode: selectedTravelMode,
       ),
     ]);
   }
