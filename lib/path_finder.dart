@@ -15,8 +15,11 @@ class PathFinder extends StatefulWidget {
 }
 
 class _PathFinderState extends State<PathFinder> {
-  TravelMode selectedTravelMode = TravelMode.walking;
-  double selectedDistance = 3.0;
+  // Allows rebuilding of bottom modal sheet
+  final ValueNotifier<TravelMode> travelMode =
+      ValueNotifier<TravelMode>(TravelMode.walking);
+  final ValueNotifier<double> distance = ValueNotifier<double>(2.0);
+
   List<LatLng> routeCoordinates = [];
   double routeDistance = -1.0;
   bool isGeneratingRoute = false;
@@ -30,16 +33,21 @@ class _PathFinderState extends State<PathFinder> {
       isGeneratingRoute = true;
     });
 
-    List<LatLng> route = await generateRoute(
-        LatLng(locationData.latitude!, locationData.longitude!),
-        1000 * selectedDistance,
-        selectedTravelMode);
-
-    setState(() {
-      routeCoordinates = route;
-      routeDistance = calculatePathDistance(route);
-      isGeneratingRoute = false;
-    });
+    try {
+      List<LatLng> route = await generateRoute(
+          LatLng(locationData.latitude!, locationData.longitude!),
+          1000 * distance.value,
+          travelMode.value);
+      setState(() {
+        routeCoordinates = route;
+        routeDistance = calculatePathDistance(route);
+        isGeneratingRoute = false;
+      });
+    } catch (e) {
+      setState(() {
+        isGeneratingRoute = false;
+      });
+    }
   }
 
   @override
@@ -54,16 +62,18 @@ class _PathFinderState extends State<PathFinder> {
         const Align(
             alignment: Alignment.center, child: CircularProgressIndicator()),
       InfoSheet(
-        updateTravelMode: (TravelMode travelMode) {
+        updateTravelMode: (TravelMode newTravelMode) {
           setState(() {
-            selectedTravelMode = travelMode;
+            travelMode.value = newTravelMode;
           });
         },
-        updateDistance: (double distance) {
+        updateDistance: (double newDistance) {
           setState(() {
-            selectedDistance = distance;
+            distance.value = newDistance;
           });
         },
+        distance: distance,
+        travelMode: travelMode,
         updateRoute: updateRoute,
       ),
     ]);

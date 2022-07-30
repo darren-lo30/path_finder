@@ -7,7 +7,6 @@ import 'package:walk_finder/pair.dart';
 
 // Given a mode of transportation and measure (either distance or time), it calculates a random path
 // from the current location that fits within the measure constraint using the given mode of transportation
-//
 int generateNumWaypoints() {
   Random rand = Random();
 
@@ -18,7 +17,7 @@ int generateNumWaypoints() {
 }
 
 // Calculates the distance between two latitude longitude coordinates
-// Returns meters
+// Returns in meters
 double calculatePointDistance(LatLng point1, LatLng point2) {
   double lat1 = point1.latitude;
   double lon1 = point1.longitude;
@@ -34,6 +33,7 @@ double calculatePointDistance(LatLng point1, LatLng point2) {
 }
 
 // Calculates the distance of a polyline path to determine the length of the route
+// Returns in meters
 double calculatePathDistance(List<LatLng> route) {
   double totalDistance = 0;
 
@@ -44,8 +44,8 @@ double calculatePathDistance(List<LatLng> route) {
   return totalDistance;
 }
 
+// Given a latitude and longitude, calculates a new latitude and longitude offset by some number of meters along the latitudinal and longitudinal axes
 LatLng calculateLatLngOffset(LatLng base, double dLat, double dLon) {
-  // Calculates lat lng offset in meters from anohter lat lng
   const double earthRadius = 6378100;
   return LatLng(
       base.latitude + (dLat / earthRadius) * (180 / pi),
@@ -74,10 +74,14 @@ Future<List<LatLng>> generateWaypointPath(
   return route;
 }
 
-// Everything in meters
+// Everything is calculated in meters
+// Procedurally generates a route by continuously refining it to get closer and closer to the defined distance
+// Randomly moves waypoints away or towards the home location to generate a new route every time
 Future<List<LatLng>> generateRoute(
     LatLng home, double distance, TravelMode travelMode) async {
+  // The number of refinement cycles to run
   const int numCycles = 10;
+
   List<Pair> offsets = List<Pair>.generate(4, (_) => Pair(0.0, 0.0));
   List<Pair> directions = [Pair(-1, 1), Pair(1, 1), Pair(1, -1), Pair(-1, -1)];
 
@@ -105,9 +109,11 @@ Future<List<LatLng>> generateRoute(
     }
 
     waypoints.add(home);
-
-    route = await generateWaypointPath(waypoints, travelMode);
-
+    try {
+      route = await generateWaypointPath(waypoints, travelMode);
+    } catch (e) {
+      rethrow;
+    }
     calculatedRouteDistance = calculatePathDistance(route);
   }
 
