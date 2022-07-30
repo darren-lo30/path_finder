@@ -60,14 +60,17 @@ Future<List<LatLng>> generateWaypointPath(
 
   List<LatLng> route = [];
   for (int i = 0; i < waypoints.length - 1; i++) {
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        dotenv.env['DIRECTIONS_API_KEY']!,
-        PointLatLng(waypoints[i].latitude, waypoints[i].longitude),
-        PointLatLng(waypoints[i + 1].latitude, waypoints[i + 1].longitude),
-        travelMode: travelMode);
-
-    for (PointLatLng point in result.points) {
-      route.add(LatLng(point.latitude, point.longitude));
+    try {
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+          dotenv.env['DIRECTIONS_API_KEY']!,
+          PointLatLng(waypoints[i].latitude, waypoints[i].longitude),
+          PointLatLng(waypoints[i + 1].latitude, waypoints[i + 1].longitude),
+          travelMode: travelMode);
+      for (PointLatLng point in result.points) {
+        route.add(LatLng(point.latitude, point.longitude));
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -114,6 +117,7 @@ Future<List<LatLng>> generateRoute(
     } catch (e) {
       rethrow;
     }
+
     calculatedRouteDistance = calculatePathDistance(route);
   }
 
