@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:walk_finder/pair.dart';
+import 'package:flutter_config/flutter_config.dart';
 
 // Given a mode of transportation and measure (either distance or time), it calculates a random path
 // from the current location that fits within the measure constraint using the given mode of transportation
@@ -62,7 +62,7 @@ Future<List<LatLng>> generateWaypointPath(
   for (int i = 0; i < waypoints.length - 1; i++) {
     try {
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-          dotenv.env['DIRECTIONS_API_KEY']!,
+          FlutterConfig.get('DIRECTIONS_API_KEY'),
           PointLatLng(waypoints[i].latitude, waypoints[i].longitude),
           PointLatLng(waypoints[i + 1].latitude, waypoints[i + 1].longitude),
           travelMode: travelMode);
